@@ -10,7 +10,7 @@ import io.jmix.core.MetadataTools
 import io.jmix.core.entity.EntityValues
 import io.jmix.data.DataConfiguration
 import io.jmix.data.PersistenceTools
-import io.jmix.dataeclipselink.DataEclipselinkConfiguration
+import io.jmix.eclipselink.EclipselinkConfiguration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ContextConfiguration
@@ -42,7 +42,7 @@ import javax.persistence.TypedQuery
  */
 
 @ContextConfiguration(
-        classes = [CoreConfiguration, DataConfiguration, DataEclipselinkConfiguration, AuditConfiguration, AuditTestConfiguration],
+        classes = [CoreConfiguration, DataConfiguration, EclipselinkConfiguration, AuditConfiguration, AuditTestConfiguration],
         initializers = [TestContextInititalizer]
 )
 class AbstractEntityLogTest extends Specification {

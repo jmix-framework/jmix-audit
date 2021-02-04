@@ -2,7 +2,7 @@ import io.jmix.audit.entity.EntityLogItem
 import io.jmix.core.Entity
 import io.jmix.core.entity.EntityValues
 import io.jmix.data.impl.EntityAttributeChanges
-import io.jmix.dataeclipselink.impl.EclipselinkEntityAttributeChanges
+import io.jmix.eclipselink.impl.EclipselinkEntityAttributeChanges
 import test_support.testmodel.IdentityEntity
 import test_support.testmodel.IntIdentityEntity
 import test_support.testmodel.StringKeyEntity

@@ -24,7 +24,7 @@ dependencies {
     api platform("io.jmix.bom:jmix-bom:$bomVersion")
 
     api 'io.jmix.data:jmix-data'
-    api 'io.jmix.data:jmix-data-eclipselink'
+    api 'io.jmix.data:jmix-eclipselink'
 
     implementation 'org.springframework:spring-orm'
     implementation 'org.springframework:spring-tx'

@@ -34,7 +34,7 @@ import io.jmix.core.metamodel.model.MetaPropertyPath;
 import io.jmix.core.metamodel.model.Range;
 import io.jmix.data.AuditInfoProvider;
 import io.jmix.data.EntityChangeType;
-import io.jmix.dataeclipselink.impl.EclipselinkEntityAttributeChanges;
+import io.jmix.eclipselink.impl.EclipselinkEntityAttributeChanges;
 import io.jmix.data.impl.EntityAttributeChanges;
 import io.jmix.data.impl.JpaDataStoreListener;
 import org.apache.commons.lang3.BooleanUtils;
