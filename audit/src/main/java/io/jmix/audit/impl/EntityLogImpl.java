@@ -34,7 +34,7 @@ import io.jmix.core.metamodel.model.MetaPropertyPath;
 import io.jmix.core.metamodel.model.Range;
 import io.jmix.data.AuditInfoProvider;
 import io.jmix.data.EntityChangeType;
-import io.jmix.data.PersistenceTools;
+import io.jmix.dataeclipselink.impl.EclipselinkEntityAttributeChanges;
 import io.jmix.data.impl.EntityAttributeChanges;
 import io.jmix.data.impl.JpaDataStoreListener;
 import org.apache.commons.lang3.BooleanUtils;
@@ -78,8 +78,6 @@ public class EntityLogImpl implements EntityLog, JpaDataStoreListener {
     protected MetadataTools metadataTools;
     @Autowired
     protected ExtendedEntities extendedEntities;
-    @Autowired
-    protected PersistenceTools persistenceTools;
     @Autowired
     protected EntityStates entityStates;
     @Autowired
@@ -869,10 +867,10 @@ public class EntityLogImpl implements EntityLog, JpaDataStoreListener {
             PropertyChangeListener propertyChangeListener = ((ChangeTracker) entity)._persistence_getPropertyChangeListener();
             if (propertyChangeListener == null)
                 throw new IllegalStateException("Entity '" + entity + "' is a ChangeTracker but has no PropertyChangeListener");
-            changes = new EntityAttributeChanges();
+            changes = new EclipselinkEntityAttributeChanges();
             ObjectChangeSet objectChanges = ((AttributeChangeListener) propertyChangeListener).getObjectChangeSet();
             if (objectChanges != null) {
-                changes.addChanges(objectChanges);
+                ((EclipselinkEntityAttributeChanges) changes).addChanges(objectChanges);
             }
         }
         return changes.getAttributes();
