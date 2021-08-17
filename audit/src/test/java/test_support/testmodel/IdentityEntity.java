@@ -17,6 +17,7 @@
 package test_support.testmodel;
 
 
+import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 
 import javax.persistence.*;
@@ -28,6 +29,7 @@ public class IdentityEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JmixGeneratedValue
     @Column(name = "ID")
     protected Long id;
 
