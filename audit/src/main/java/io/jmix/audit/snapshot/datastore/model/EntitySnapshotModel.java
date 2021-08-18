@@ -211,7 +211,7 @@ public class EntitySnapshotModel {
     }
 
     @JmixProperty
-    @DependsOnProperties({"snapshotDate","authorUsername"})
+    @DependsOnProperties({"snapshotDate"})
     public Date getChangeDate() {
         return this.snapshotDate;
     }

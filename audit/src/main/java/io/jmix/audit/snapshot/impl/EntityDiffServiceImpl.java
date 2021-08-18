@@ -180,6 +180,7 @@ public class EntityDiffServiceImpl implements EntityDiffService {
                 basicPropertyDiff.setBeforeValue(firstValue);
                 basicPropertyDiff.setAfterValue(secondValue);
                 basicPropertyDiff.setMetaProperty(metaProperty);
+                propertyDiff = basicPropertyDiff;
             }
         } else if (range.getCardinality().isMany()) {
             propertyDiff = getCollectionDiff(firstValue, secondValue, fetchPlanProperty, metaProperty, diffBranch);

@@ -16,12 +16,14 @@
 
 package io.jmix.audit.snapshot.datastore.model;
 
+import io.jmix.core.MessageTools;
 import io.jmix.core.Messages;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import io.jmix.core.metamodel.annotation.JmixProperty;
 import io.jmix.core.metamodel.model.MetaProperty;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Id;
 import java.util.UUID;
 
@@ -44,6 +46,7 @@ public abstract class EntityPropertyDifferenceModel {
     protected String label = "";
     protected String metaClassName;
     protected String propertyName;
+    private MessageTools messageTools;
     protected Messages messages;
     protected EntityPropertyDifferenceModel parentProperty;
 
@@ -52,6 +55,13 @@ public abstract class EntityPropertyDifferenceModel {
     public void setMetaProperty(MetaProperty metaProperty){
         metaClassName = metaProperty.getDomain().getName();
         propertyName = metaProperty.getName();
+        propertyCaption = messageTools.getPropertyCaption(metaProperty.getDomain(), metaProperty.getName());
+    }
+
+    @PostConstruct
+    private void init(MessageTools messageTools, Messages messages){
+        this.messageTools = messageTools;
+        this.messages = messages;
     }
 
     public UUID getId() {

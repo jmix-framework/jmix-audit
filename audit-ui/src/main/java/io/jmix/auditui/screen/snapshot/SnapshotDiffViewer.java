@@ -66,8 +66,8 @@ public class SnapshotDiffViewer extends ScreenFragment {
     protected SecureOperations secureOperations;
     @Autowired
     protected PolicyStore policyStore;
-
-    private Object entity;
+    @Autowired
+    private Form diffValuesField;
 
     @Subscribe
     public void onInit(InitEvent event) {
@@ -80,7 +80,7 @@ public class SnapshotDiffViewer extends ScreenFragment {
 
             valuesHeader.setVisible(stateVisible || valuesVisible);
             itemStateField.setVisible(stateVisible);
-//            diffValuesField.set(valuesVisible);
+            diffValuesField.setVisible(valuesVisible);
 
             if (e.getItem() != null) {
                 EntityPropertyDifferenceModel.ItemState itemState = e.getItem().getItemState();
@@ -102,43 +102,59 @@ public class SnapshotDiffViewer extends ScreenFragment {
         }
         List<EntityPropertyDifferenceModel> entityPropertyDifferenceModels = new ArrayList<>();
         for (EntityPropertyDifferenceModel childPropertyDiff : diff.getPropertyDiffs()) {
-            loadPropertyDiff(childPropertyDiff);
+            EntityPropertyDifferenceModel differenceModel = loadPropertyDiff(childPropertyDiff);
+            if (differenceModel != null) {
+                entityPropertyDifferenceModels.add(differenceModel);
+            }
         }
         return entityPropertyDifferenceModels;
     }
 
-    private void loadPropertyDiff(EntityPropertyDifferenceModel propertyDiff) {
-        if (propertyDiff != null) {
-            MetaClass propMetaClass = metadata.getClass(propertyDiff.getMetaClassName());
-            if (!secureOperations.isEntityReadPermitted(propMetaClass, policyStore)
-                    || !secureOperations.isEntityAttrReadPermitted(propMetaClass.getPropertyPath(propertyDiff.getPropertyName()), policyStore)) {
-                return;
+    private EntityPropertyDifferenceModel loadPropertyDiff(EntityPropertyDifferenceModel propertyDiff) {
+        if (propertyDiff == null) {
+            return null;
+        }
+        MetaClass propMetaClass = metadata.getClass(propertyDiff.getMetaClassName());
+        if (!secureOperations.isEntityReadPermitted(propMetaClass, policyStore)
+                || !secureOperations.isEntityAttrReadPermitted(propMetaClass.getPropertyPath(propertyDiff.getPropertyName()), policyStore)) {
+            return null;
+        }
+
+        if (propertyDiff instanceof EntityClassPropertyDifferenceModel) {
+            EntityClassPropertyDifferenceModel classPropertyDiff = (EntityClassPropertyDifferenceModel) propertyDiff;
+            for (EntityPropertyDifferenceModel childPropertyDiff : classPropertyDiff.getPropertyDiffs()) {
+                EntityPropertyDifferenceModel entityPropertyDifferenceModel = loadPropertyDiff(childPropertyDiff);
+                if (entityPropertyDifferenceModel != null) {
+                    entityPropertyDifferenceModel.setParentProperty(propertyDiff);
+                }
+            }
+        } else if (propertyDiff instanceof EntityCollectionPropertyDifferenceModel) {
+            EntityCollectionPropertyDifferenceModel collectionPropertyDiff = (EntityCollectionPropertyDifferenceModel) propertyDiff;
+            for (EntityPropertyDifferenceModel childPropertyDiff : collectionPropertyDiff.getAddedEntities()) {
+                EntityPropertyDifferenceModel entityPropertyDifferenceModel = loadPropertyDiff(childPropertyDiff);
+                if (entityPropertyDifferenceModel != null) {
+                    entityPropertyDifferenceModel.setParentProperty(propertyDiff);
+                }
             }
 
-            if (propertyDiff instanceof EntityClassPropertyDifferenceModel) {
-                EntityClassPropertyDifferenceModel classPropertyDiff = (EntityClassPropertyDifferenceModel) propertyDiff;
-                for (EntityPropertyDifferenceModel childPropertyDiff : classPropertyDiff.getPropertyDiffs()) {
-                    loadPropertyDiff(childPropertyDiff);
+            for (EntityPropertyDifferenceModel childPropertyDiff : collectionPropertyDiff.getModifiedEntities()) {
+                EntityPropertyDifferenceModel entityPropertyDifferenceModel = loadPropertyDiff(childPropertyDiff);
+                if (entityPropertyDifferenceModel != null) {
+                    entityPropertyDifferenceModel.setParentProperty(propertyDiff);
                 }
-            } else if (propertyDiff instanceof EntityCollectionPropertyDifferenceModel) {
-                EntityCollectionPropertyDifferenceModel collectionPropertyDiff = (EntityCollectionPropertyDifferenceModel) propertyDiff;
-                for (EntityPropertyDifferenceModel childPropertyDiff : collectionPropertyDiff.getAddedEntities()) {
-                    loadPropertyDiff(childPropertyDiff);
-                }
+            }
 
-                for (EntityPropertyDifferenceModel childPropertyDiff : collectionPropertyDiff.getModifiedEntities()) {
-                    loadPropertyDiff(childPropertyDiff);
-                }
-
-                for (EntityPropertyDifferenceModel childPropertyDiff : collectionPropertyDiff.getRemovedEntities()) {
-                    loadPropertyDiff(childPropertyDiff);
+            for (EntityPropertyDifferenceModel childPropertyDiff : collectionPropertyDiff.getRemovedEntities()) {
+                EntityPropertyDifferenceModel entityPropertyDifferenceModel = loadPropertyDiff(childPropertyDiff);
+                if (entityPropertyDifferenceModel != null) {
+                    entityPropertyDifferenceModel.setParentProperty(propertyDiff);
                 }
             }
         }
+        return propertyDiff;
     }
 
     public void loadVersions(Object entity) {
-        this.entity = entity;
         snapshotsDs.setItems(entitySnapshotService.getSnapshots(entity));
         snapshotsTable.repaint();
     }
@@ -164,16 +180,12 @@ public class SnapshotDiffViewer extends ScreenFragment {
 
         EntityDifferenceModel diff = null;
         if ((secondSnap != null) || (firstSnap != null)) {
-            diff = loadDiff(firstSnap, secondSnap);
+            diff = entityDiffService.getDifference(firstSnap, secondSnap);
             entityDiffDs.setItem(diff);
         }
 
         diffDs.setItems(loadTree(diff));
         diffTable.expandAll();
-    }
-
-    private EntityDifferenceModel loadDiff(EntitySnapshotModel firstSnap, EntitySnapshotModel secondSnap) {
-        return entityDiffService.getDifference(firstSnap, secondSnap);
     }
 
 }
