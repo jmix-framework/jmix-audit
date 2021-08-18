@@ -20,14 +20,10 @@ import io.jmix.core.Metadata;
 import io.jmix.core.annotation.TenantId;
 import io.jmix.core.entity.annotation.EmbeddedParameters;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
-import io.jmix.core.metamodel.annotation.DependsOnProperties;
 import io.jmix.core.metamodel.annotation.JmixEntity;
-import io.jmix.core.metamodel.annotation.JmixProperty;
-import io.jmix.core.metamodel.datatype.Datatype;
 import io.jmix.core.metamodel.datatype.DatatypeRegistry;
 import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.data.entity.ReferenceToEntity;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -77,8 +73,11 @@ public class EntitySnapshot {
     @EmbeddedParameters(nullAllowed = false)
     private ReferenceToEntity entity;
 
-    private transient DatatypeRegistry datatypeRegistry;
-    private transient CurrentAuthentication currentAuthentication;
+    @Transient
+    private DatatypeRegistry datatypeRegistry;
+
+    @Transient
+    private CurrentAuthentication currentAuthentication;
 
     @PostConstruct
     public void init(Metadata metadata, DatatypeRegistry datatypeRegistry, CurrentAuthentication currentAuthentication) {
@@ -149,29 +148,6 @@ public class EntitySnapshot {
 
     public void setAuthorUsername(String authorUsername) {
         this.authorUsername = authorUsername;
-    }
-
-    @JmixProperty
-    @DependsOnProperties({"snapshotDate","authorUsername"})
-    public String getLabel() {
-        String name = "";
-        if (authorUsername != null && StringUtils.isNotEmpty(authorUsername)) {
-            name += this.authorUsername + " ";
-        }
-
-        Datatype datatype = datatypeRegistry.get(Date.class);
-
-        if (currentAuthentication != null && currentAuthentication.isSet()) {
-            name += datatype.format(snapshotDate, currentAuthentication.getLocale());
-        }
-
-        return StringUtils.trim(name);
-    }
-
-    @JmixProperty
-    @DependsOnProperties({"snapshotDate","authorUsername"})
-    public Date getChangeDate() {
-        return this.snapshotDate;
     }
 
     public Date getSnapshotDate() {

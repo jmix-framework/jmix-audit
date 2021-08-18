@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Haulmont.
+ * Copyright 2021 Haulmont.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,20 @@
 
 package test_support.testmodel;
 
-
+import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.JmixEntity;
+import io.jmix.core.metamodel.annotation.JmixProperty;
 
-import javax.persistence.*;
+import javax.persistence.Id;
 
-@Entity(name = "test$IdentityEntity")
 @JmixEntity
-@Table(name = "TEST_IDENTITY")
-public class IdentityEntity {
-
+public class NonPersistEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @JmixGeneratedValue
     protected Long id;
 
-    @Column(name = "NAME")
+    @JmixProperty
     private String name;
-
-    @Column(name = "EMAIL")
-    private String email;
 
     public Long getId() {
         return id;
@@ -52,13 +46,4 @@ public class IdentityEntity {
     public void setName(String name) {
         this.name = name;
     }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }
-

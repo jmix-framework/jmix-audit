@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.jmix.audit.snapshot.datastore.model;
+package io.jmix.audit.snapshot.model;
 
 import io.jmix.core.annotation.TenantId;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;

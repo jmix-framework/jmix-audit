@@ -18,8 +18,8 @@ package io.jmix.audit.snapshot.datastore.impl;
 
 import io.jmix.audit.entity.EntitySnapshot;
 import io.jmix.audit.snapshot.datastore.EntitySnapshotDataStore;
-import io.jmix.audit.snapshot.datastore.model.EntitySnapshotModel;
-import io.jmix.audit.snapshot.datastore.model.EntitySnapshotModelConverter;
+import io.jmix.audit.snapshot.model.EntitySnapshotModel;
+import io.jmix.audit.snapshot.model.EntitySnapshotModelConverter;
 import io.jmix.core.*;
 import io.jmix.core.metamodel.model.MetaClass;
 import org.springframework.stereotype.Component;
@@ -51,14 +51,14 @@ public class EntitySnapshotDataStoreImpl implements EntitySnapshotDataStore {
     }
 
     @Override
-    public List<EntitySnapshotModel> findEntitySnapshotByMetaClassAndEntity(MetaClass metaClass, Object entity) {
+    public List<EntitySnapshotModel> findEntitySnapshotByMetaClassAndEntity(Object entity, MetaClass entityMetaClass) {
         String query = format(
                 "select s from audit_EntitySnapshot s where s.entity.%s = :entityId and s.entityMetaClass = :metaClass " +
-                        "order by s.snapshotDate desc", referenceToEntitySupport.getReferenceIdPropertyName(metaClass));
+                        "order by s.snapshotDate desc", referenceToEntitySupport.getReferenceIdPropertyName(entityMetaClass));
         LoadContext<EntitySnapshot> entitySnapshotLoadContext = new LoadContext<EntitySnapshot>(metadata.getClass(EntitySnapshot.class))
                 .setQuery(new LoadContext.Query(query)
                         .setParameter("entityId", referenceToEntitySupport.getReferenceId(entity))
-                        .setParameter("metaClass", metaClass.getName())
+                        .setParameter("metaClass", entityMetaClass.getName())
                 );
         return entitySnapshotModelConverter.createEntitySnapshotModels(unconstrainedDataManager.loadList(entitySnapshotLoadContext));
     }
@@ -92,7 +92,7 @@ public class EntitySnapshotDataStoreImpl implements EntitySnapshotDataStore {
 
     @Override
     public void saveSnapshot(Collection<EntitySnapshotModel> entitySnapshots) {
-        unconstrainedDataManager.save(entitySnapshots);
+        unconstrainedDataManager.save(entitySnapshots.toArray());
     }
 
     @Override

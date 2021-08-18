@@ -16,12 +16,12 @@
 
 package io.jmix.audit.snapshot;
 
-import io.jmix.audit.snapshot.datastore.model.EntityDifferenceModel;
-import io.jmix.audit.snapshot.datastore.model.EntitySnapshotModel;
+import io.jmix.audit.snapshot.model.EntityDifferenceModel;
+import io.jmix.audit.snapshot.model.EntitySnapshotModel;
 
 import javax.annotation.Nullable;
 
-public interface EntityDiffService {
+public interface EntityDifferenceManager {
 
     /**
      * Diff two versions of entity

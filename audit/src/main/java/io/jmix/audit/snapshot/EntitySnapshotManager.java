@@ -16,7 +16,7 @@
 
 package io.jmix.audit.snapshot;
 
-import io.jmix.audit.snapshot.datastore.model.EntitySnapshotModel;
+import io.jmix.audit.snapshot.model.EntitySnapshotModel;
 import io.jmix.core.FetchPlan;
 import io.jmix.core.metamodel.model.MetaClass;
 
@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Creates and analyzes entity snapshots.
  */
-public interface EntitySnapshotAPI {
+public interface EntitySnapshotManager {
     /**
      * Load snapshots for entity
      *

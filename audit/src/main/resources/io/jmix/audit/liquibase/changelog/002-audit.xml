@@ -30,8 +30,8 @@
             <column name="AUTHOR_USERNAME" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="FETCH_PLAN_XML" type="text"/>
-            <column name="SNAPSHOT_XML" type="text"/>
+            <column name="FETCH_PLAN_XML" type="clob"/>
+            <column name="SNAPSHOT_XML" type="clob"/>
             <column name="SNAPSHOT_DATE" type="timestamp">
                 <constraints nullable="false"/>
             </column>

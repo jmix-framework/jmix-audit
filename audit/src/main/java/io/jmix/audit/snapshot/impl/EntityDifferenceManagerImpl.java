@@ -16,9 +16,9 @@
 
 package io.jmix.audit.snapshot.impl;
 
-import io.jmix.audit.snapshot.EntityDiffService;
-import io.jmix.audit.snapshot.EntitySnapshotAPI;
-import io.jmix.audit.snapshot.datastore.model.*;
+import io.jmix.audit.snapshot.EntityDifferenceManager;
+import io.jmix.audit.snapshot.EntitySnapshotManager;
+import io.jmix.audit.snapshot.model.*;
 import io.jmix.core.*;
 import io.jmix.core.common.datastruct.Pair;
 import io.jmix.core.entity.EntitySystemAccess;
@@ -36,23 +36,23 @@ import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@Component("audit_EntityDiffService")
-public class EntityDiffServiceImpl implements EntityDiffService {
+@Component("audit_EntityDifferenceManager")
+public class EntityDifferenceManagerImpl implements EntityDifferenceManager {
 
-    private static final Logger log = LoggerFactory.getLogger(EntityDiffServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(EntityDifferenceManagerImpl.class);
 
-    private final EntitySnapshotAPI entitySnapshotAPI;
+    private final EntitySnapshotManager entitySnapshotManager;
     private final FetchPlans fetchPlans;
     private final Metadata metadata;
     private final ExtendedEntities extendedEntities;
     private final MetadataTools metadataTools;
     private final InstanceNameProvider instanceNameProvider;
 
-    public EntityDiffServiceImpl(EntitySnapshotAPI entitySnapshotAPI,
+    public EntityDifferenceManagerImpl(EntitySnapshotManager entitySnapshotManager,
                                  FetchPlans fetchPlans,
                                  Metadata metadata,
                                  ExtendedEntities extendedEntities, MetadataTools metadataTools, InstanceNameProvider instanceNameProvider) {
-        this.entitySnapshotAPI = entitySnapshotAPI;
+        this.entitySnapshotManager = entitySnapshotManager;
         this.fetchPlans = fetchPlans;
         this.metadata = metadata;
         this.extendedEntities = extendedEntities;
@@ -80,8 +80,8 @@ public class EntityDiffServiceImpl implements EntityDiffService {
         checkNotNull(second, "Diff could not be create for null snapshot");
 
         // Extract fetchPlans
-        FetchPlan firstFetchPlan = first != null ? entitySnapshotAPI.extractFetchPlan(first) : null;
-        FetchPlan secondFetchPlan = entitySnapshotAPI.extractFetchPlan(second);
+        FetchPlan firstFetchPlan = first != null ? entitySnapshotManager.extractFetchPlan(first) : null;
+        FetchPlan secondFetchPlan = entitySnapshotManager.extractFetchPlan(second);
 
         // Get fetchPlan for diff
         FetchPlan diffFetchPlan;
@@ -102,8 +102,8 @@ public class EntityDiffServiceImpl implements EntityDiffService {
         result.setAfterSnapshot(second);
 
         if (!diffFetchPlan.getProperties().isEmpty()) {
-            Object firstEntity = first != null ? entitySnapshotAPI.extractEntity(first) : null;
-            Object secondEntity = entitySnapshotAPI.extractEntity(second);
+            Object firstEntity = first != null ? entitySnapshotManager.extractEntity(first) : null;
+            Object secondEntity = entitySnapshotManager.extractEntity(second);
 
             result.setBeforeEntity(firstEntity);
             result.setAfterEntity(secondEntity);

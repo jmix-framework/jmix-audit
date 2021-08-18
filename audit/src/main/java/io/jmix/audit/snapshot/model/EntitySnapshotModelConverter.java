@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.jmix.audit.snapshot.datastore.model;
+package io.jmix.audit.snapshot.model;
 
 import io.jmix.audit.entity.EntitySnapshot;
 import io.jmix.core.Metadata;

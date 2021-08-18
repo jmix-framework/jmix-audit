@@ -16,8 +16,8 @@
 
 
 import io.jmix.audit.entity.EntitySnapshot
-import io.jmix.audit.snapshot.EntitySnapshotAPI
-import io.jmix.audit.snapshot.datastore.model.EntitySnapshotModel
+import io.jmix.audit.snapshot.EntitySnapshotManager
+import io.jmix.audit.snapshot.model.EntitySnapshotModel
 import io.jmix.core.Entity
 import io.jmix.core.FetchPlan
 import io.jmix.core.FetchPlanRepository
@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.core.userdetails.User
 import test_support.testmodel.IdentityEntity
+import test_support.testmodel.NonPersistEntity
 
 import javax.persistence.TypedQuery
 
@@ -34,7 +35,7 @@ class EntitySnapshotApiTest extends AbstractEntityLogTest {
 
 
     @Autowired
-    private EntitySnapshotAPI snapshotApi
+    private EntitySnapshotManager snapshotApi
 
     @Autowired
     private FetchPlanRepository fetchPlanRepository
@@ -118,9 +119,9 @@ class EntitySnapshotApiTest extends AbstractEntityLogTest {
         given:
         FetchPlan fetchPlan = fetchPlanRepository.getFetchPlan(IdentityEntity.class, FetchPlan.LOCAL)
         Date snapshotDate = new Date(100)
-        def entity = new IdentityEntity()
+        def entity = new NonPersistEntity()
         entity.setName('testRole')
-        def identityEntityMetaClass = metadata.findClass(entity.getClass())
+        def nonPersistEntityMetaClass = metadata.findClass(entity.getClass())
         saveEntity(entity)
 
         when:
@@ -140,7 +141,7 @@ class EntitySnapshotApiTest extends AbstractEntityLogTest {
         }
         snapshot2.getSnapshotXml().contains('testRole') == true
         then:
-        def snapshots2 = snapshotApi.getSnapshots(identityEntityMetaClass, entity.getId())
+        def snapshots2 = snapshotApi.getSnapshots(nonPersistEntityMetaClass, entity.getId())
 
         snapshots2.size() == 0
         snapshot2.getSnapshotDate() == snapshotDate
@@ -152,7 +153,7 @@ class EntitySnapshotApiTest extends AbstractEntityLogTest {
         }
         snapshot3.getSnapshotXml().contains('testRole') == true
         then:
-        def snapshots3 = snapshotApi.getSnapshots(identityEntityMetaClass, entity.getId())
+        def snapshots3 = snapshotApi.getSnapshots(nonPersistEntityMetaClass, entity.getId())
 
         snapshots3.size() == 0
         snapshot3.getAuthorUsername() == "admin"

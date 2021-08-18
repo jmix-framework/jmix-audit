@@ -16,14 +16,15 @@
 
 package io.jmix.auditui.screen.snapshot;
 
-import io.jmix.audit.snapshot.EntityDiffService;
-import io.jmix.audit.snapshot.EntitySnapshotService;
-import io.jmix.audit.snapshot.datastore.model.*;
+import io.jmix.audit.snapshot.EntityDifferenceManager;
+import io.jmix.audit.snapshot.EntitySnapshotManager;
+import io.jmix.audit.snapshot.model.*;
+import io.jmix.core.AccessManager;
 import io.jmix.core.Messages;
 import io.jmix.core.Metadata;
+import io.jmix.core.accesscontext.CrudEntityContext;
+import io.jmix.core.accesscontext.EntityAttributeContext;
 import io.jmix.core.metamodel.model.MetaClass;
-import io.jmix.security.constraint.PolicyStore;
-import io.jmix.security.constraint.SecureOperations;
 import io.jmix.ui.component.*;
 import io.jmix.ui.model.CollectionContainer;
 import io.jmix.ui.model.InstanceContainer;
@@ -39,17 +40,17 @@ import java.util.*;
 @UiDescriptor("snapshot-diff.xml")
 public class SnapshotDiffViewer extends ScreenFragment {
     @Autowired
-    private CollectionContainer<EntityPropertyDifferenceModel> diffDs;
+    private CollectionContainer<EntityPropertyDifferenceModel> diffCt;
     @Autowired
-    private InstanceContainer<EntityDifferenceModel> entityDiffDs;
+    private InstanceContainer<EntityDifferenceModel> entityDiffCt;
     @Autowired
-    private CollectionContainer<EntitySnapshotModel> snapshotsDs;
+    private CollectionContainer<EntitySnapshotModel> snapshotsCt;
     @Autowired
-    private EntityDiffService entityDiffService;
+    private EntityDifferenceManager entityDifferenceManager;
     @Autowired
     private Table<EntitySnapshotModel> snapshotsTable;
     @Autowired
-    private EntitySnapshotService entitySnapshotService;
+    private EntitySnapshotManager entitySnapshotManager;
     @Autowired
     private HBoxLayout itemStateField;
     @Autowired
@@ -63,9 +64,7 @@ public class SnapshotDiffViewer extends ScreenFragment {
     @Autowired
     private Messages messages;
     @Autowired
-    protected SecureOperations secureOperations;
-    @Autowired
-    protected PolicyStore policyStore;
+    protected AccessManager accessManager;
     @Autowired
     private Form diffValuesField;
 
@@ -74,7 +73,7 @@ public class SnapshotDiffViewer extends ScreenFragment {
         diffTable.setStyleProvider(new DiffStyleProvider());
         diffTable.setIconProvider(new DiffIconProvider());
 
-        diffDs.addItemChangeListener(e -> {
+        diffCt.addItemChangeListener(e -> {
             boolean valuesVisible = (e.getItem() != null) && (e.getItem().hasStateValues());
             boolean stateVisible = (e.getItem() != null) && (e.getItem().hasStateValues() && e.getItem().itemStateVisible());
 
@@ -115,8 +114,12 @@ public class SnapshotDiffViewer extends ScreenFragment {
             return null;
         }
         MetaClass propMetaClass = metadata.getClass(propertyDiff.getMetaClassName());
-        if (!secureOperations.isEntityReadPermitted(propMetaClass, policyStore)
-                || !secureOperations.isEntityAttrReadPermitted(propMetaClass.getPropertyPath(propertyDiff.getPropertyName()), policyStore)) {
+        CrudEntityContext entityContext = new CrudEntityContext(propMetaClass);
+        accessManager.applyRegisteredConstraints(entityContext);
+        EntityAttributeContext attributeContext = new EntityAttributeContext(propMetaClass, propertyDiff.getPropertyName());
+        accessManager.applyRegisteredConstraints(attributeContext);
+        if (!entityContext.isReadPermitted()
+                || !attributeContext.canView()) {
             return null;
         }
 
@@ -155,13 +158,13 @@ public class SnapshotDiffViewer extends ScreenFragment {
     }
 
     public void loadVersions(Object entity) {
-        snapshotsDs.setItems(entitySnapshotService.getSnapshots(entity));
+        snapshotsCt.setItems(entitySnapshotManager.getSnapshots(entity));
         snapshotsTable.repaint();
     }
 
     @Subscribe("compareBtn")
     public void onCompareBtnClick(Button.ClickEvent event) {
-        entityDiffDs.setItem(null);
+        entityDiffCt.setItem(null);
 
         EntitySnapshotModel firstSnap = null;
         EntitySnapshotModel secondSnap = null;
@@ -173,18 +176,18 @@ public class SnapshotDiffViewer extends ScreenFragment {
             secondSnap = (EntitySnapshotModel) selectedItems[1];
         } else if (selected.size() == 1) {
             secondSnap = (EntitySnapshotModel) selectedItems[0];
-            firstSnap = entitySnapshotService.getLastEntitySnapshot(metadata.getClass(secondSnap.getEntityMetaClass()), secondSnap.getEntityId());
+            firstSnap = entitySnapshotManager.getLastEntitySnapshot(metadata.getClass(secondSnap.getEntityMetaClass()), secondSnap.getEntityId());
             if (firstSnap == secondSnap)
                 firstSnap = null;
         }
 
         EntityDifferenceModel diff = null;
         if ((secondSnap != null) || (firstSnap != null)) {
-            diff = entityDiffService.getDifference(firstSnap, secondSnap);
-            entityDiffDs.setItem(diff);
+            diff = entityDifferenceManager.getDifference(firstSnap, secondSnap);
+            entityDiffCt.setItem(diff);
         }
 
-        diffDs.setItems(loadTree(diff));
+        diffCt.setItems(loadTree(diff));
         diffTable.expandAll();
     }
 

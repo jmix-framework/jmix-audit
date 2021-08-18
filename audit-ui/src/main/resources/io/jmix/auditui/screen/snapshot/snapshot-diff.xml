@@ -18,13 +18,13 @@
 <window xmlns="http://jmix.io/schema/ui/window"
         caption="msg://snapshotDiffViewer.caption">
     <data>
-        <collection id="snapshotsDs" class="io.jmix.audit.snapshot.datastore.model.EntitySnapshotModel"
+        <collection id="snapshotsCt" class="io.jmix.audit.snapshot.model.EntitySnapshotModel"
                     fetchPlan="_local"/>
-        <instance id="entityDiffDs"
-                  class="io.jmix.audit.snapshot.datastore.model.EntityDifferenceModel"
+        <instance id="entityDiffCt"
+                  class="io.jmix.audit.snapshot.model.EntityDifferenceModel"
                   fetchPlan="_local"/>
-        <collection id="diffDs"
-                    class="io.jmix.audit.snapshot.datastore.model.EntityPropertyDifferenceModel"
+        <collection id="diffCt"
+                    class="io.jmix.audit.snapshot.model.EntityPropertyDifferenceModel"
                     fetchPlan="_local"/>
 
     </data>

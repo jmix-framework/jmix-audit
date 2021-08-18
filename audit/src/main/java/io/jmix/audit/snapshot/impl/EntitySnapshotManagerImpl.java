@@ -18,9 +18,9 @@ package io.jmix.audit.snapshot.impl;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
-import io.jmix.audit.snapshot.EntitySnapshotAPI;
+import io.jmix.audit.snapshot.EntitySnapshotManager;
 import io.jmix.audit.snapshot.datastore.EntitySnapshotDataStore;
-import io.jmix.audit.snapshot.datastore.model.EntitySnapshotModel;
+import io.jmix.audit.snapshot.model.EntitySnapshotModel;
 import io.jmix.core.Entity;
 import io.jmix.core.*;
 import io.jmix.core.common.util.Preconditions;
@@ -46,7 +46,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 @Component("audit_EntitySnapshotManager")
-public class EntitySnapshotAPIImpl implements EntitySnapshotAPI {
+public class EntitySnapshotManagerImpl implements EntitySnapshotManager {
 
     private final ExtendedEntities extendedEntities;
     private final UnconstrainedDataManager unconstrainedDataManager;
@@ -60,17 +60,17 @@ public class EntitySnapshotAPIImpl implements EntitySnapshotAPI {
     private final FetchPlanSerialization fetchPlanSerialization;
     private final EntitySnapshotDataStore entitySnapshotDataStore;
 
-    public EntitySnapshotAPIImpl(ExtendedEntities extendedEntities,
-                                 UnconstrainedDataManager unconstrainedDataManager,
-                                 FetchPlans fetchPlans,
-                                 MetadataTools metadataTools,
-                                 Metadata metadata,
-                                 ReferenceToEntitySupport referenceToEntitySupport,
-                                 TimeSource timeSource,
-                                 CurrentAuthentication currentAuthentication,
-                                 EntitySerialization entitySerialization,
-                                 FetchPlanSerialization fetchPlanSerialization,
-                                 EntitySnapshotDataStore entitySnapshotDataStore) {
+    public EntitySnapshotManagerImpl(ExtendedEntities extendedEntities,
+                                     UnconstrainedDataManager unconstrainedDataManager,
+                                     FetchPlans fetchPlans,
+                                     MetadataTools metadataTools,
+                                     Metadata metadata,
+                                     ReferenceToEntitySupport referenceToEntitySupport,
+                                     TimeSource timeSource,
+                                     CurrentAuthentication currentAuthentication,
+                                     EntitySerialization entitySerialization,
+                                     FetchPlanSerialization fetchPlanSerialization,
+                                     EntitySnapshotDataStore entitySnapshotDataStore) {
         this.extendedEntities = extendedEntities;
         this.unconstrainedDataManager = unconstrainedDataManager;
         this.fetchPlans = fetchPlans;
@@ -92,7 +92,7 @@ public class EntitySnapshotAPIImpl implements EntitySnapshotAPI {
                 .build();
         Object entity = unconstrainedDataManager.load(new LoadContext<>(metaClass).setId(id).setFetchPlan(localFetchPlan));
         checkCompositePrimaryKey(metaClass, entity);
-        return entitySnapshotDataStore.findEntitySnapshotByMetaClassAndEntity(metaClass, entity);
+        return entitySnapshotDataStore.findEntitySnapshotByMetaClassAndEntity(entity, metaClass);
     }
 
     @Override

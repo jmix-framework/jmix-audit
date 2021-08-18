@@ -16,9 +16,9 @@
 
 package io.jmix.auditui.screen.snapshot;
 
-import io.jmix.audit.snapshot.datastore.model.EntityClassPropertyDifferenceModel;
-import io.jmix.audit.snapshot.datastore.model.EntityCollectionPropertyDifferenceModel;
-import io.jmix.audit.snapshot.datastore.model.EntityPropertyDifferenceModel;
+import io.jmix.audit.snapshot.model.EntityClassPropertyDifferenceModel;
+import io.jmix.audit.snapshot.model.EntityCollectionPropertyDifferenceModel;
+import io.jmix.audit.snapshot.model.EntityPropertyDifferenceModel;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;

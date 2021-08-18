@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.jmix.audit.snapshot.datastore.model;
+package io.jmix.audit.snapshot.model;
 
 import io.jmix.core.MessageTools;
 import io.jmix.core.Messages;
