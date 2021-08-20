@@ -19,6 +19,7 @@ package io.jmix.auditui.screen.snapshot;
 import io.jmix.audit.snapshot.model.EntityClassPropertyDifferenceModel;
 import io.jmix.audit.snapshot.model.EntityCollectionPropertyDifferenceModel;
 import io.jmix.audit.snapshot.model.EntityPropertyDifferenceModel;
+import io.jmix.ui.icon.JmixIcon;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
@@ -31,23 +32,23 @@ public class DiffIconProvider implements Function<EntityPropertyDifferenceModel,
         if (entity instanceof EntityClassPropertyDifferenceModel) {
             switch (entity.getItemState()) {
                 case Added:
-                    return "icons/plus.png";
+                    return JmixIcon.PLUS.source();
 
                 case Modified:
-                    return "icons/edit.png";
+                    return JmixIcon.EDIT.source();
 
                 case Normal:
                     if (((EntityClassPropertyDifferenceModel) entity).isLinkChange()) {
-                        return "icons/chain.png";
+                        return JmixIcon.CHAIN.source();
                     } else {
-                        return "icons/edit.png";
+                        return JmixIcon.EDIT.source();
                     }
 
                 case Removed:
-                    return "icons/minus.png";
+                    return JmixIcon.MINUS.source();
             }
         } else if (entity instanceof EntityCollectionPropertyDifferenceModel) {
-            return "icons/category.png";
+            return JmixIcon.TH_LIST.source();
         }
 
         return null;

@@ -16,6 +16,7 @@
 
 package io.jmix.audit.snapshot.model;
 
+import io.jmix.core.InstanceNameProvider;
 import io.jmix.core.MessageTools;
 import io.jmix.core.Messages;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
@@ -47,6 +48,7 @@ public abstract class EntityPropertyDifferenceModel {
     protected String metaClassName;
     protected String propertyName;
     private MessageTools messageTools;
+    protected InstanceNameProvider instanceNameProvider;
     protected Messages messages;
     protected EntityPropertyDifferenceModel parentProperty;
 
@@ -59,9 +61,10 @@ public abstract class EntityPropertyDifferenceModel {
     }
 
     @PostConstruct
-    private void init(MessageTools messageTools, Messages messages){
+    private void init(MessageTools messageTools, Messages messages, InstanceNameProvider instanceNameProvider){
         this.messageTools = messageTools;
         this.messages = messages;
+        this.instanceNameProvider = instanceNameProvider;
     }
 
     public UUID getId() {

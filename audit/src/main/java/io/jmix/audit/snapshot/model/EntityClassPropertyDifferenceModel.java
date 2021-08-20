@@ -16,10 +16,8 @@
 
 package io.jmix.audit.snapshot.model;
 
-import io.jmix.core.InstanceNameProvider;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,13 +37,6 @@ public class EntityClassPropertyDifferenceModel extends EntityPropertyDifference
     private String beforeString = "";
 
     private String afterString = "";
-
-    private InstanceNameProvider instanceNameProvider;
-
-    @PostConstruct
-    public void init(InstanceNameProvider instanceNameProvider) {
-        this.instanceNameProvider = instanceNameProvider;
-    }
 
     private void setLabel(){
         if (afterValue != null && isLinkChange) {

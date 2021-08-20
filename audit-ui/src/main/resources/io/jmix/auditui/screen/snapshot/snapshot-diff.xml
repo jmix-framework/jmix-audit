@@ -35,7 +35,7 @@
                 <buttonsPanel>
                     <button id="compareBtn" icon="icons/copy.png" caption="msg://snapshotDiffViewer.actions.Compare"/>
                 </buttonsPanel>
-                <table id="snapshotsTable" multiselect="true" width="100%" dataContainer="snapshotsDs">
+                <table id="snapshotsTable" multiselect="true" width="100%" dataContainer="snapshotsCt">
                     <columns>
                         <column id="changeDate"/>
                         <column id="authorUsername"/>
@@ -45,8 +45,8 @@
             <split orientation="vertical" width="100%" height="100%">
                 <vbox id="diffVBox" expand="diffTable" spacing="true" margin="true" width="100%" height="100%">
                     <label value="msg://snapshotDiffViewer.difference" stylename="h2"/>
-                    <label property="label" dataContainer="entityDiffDs"/>
-                    <treeTable id="diffTable" width="100%" dataContainer="diffDs" hierarchyProperty="parentProperty">
+                    <label property="label" dataContainer="entityDiffCt"/>
+                    <treeTable id="diffTable" width="100%" dataContainer="diffCt" hierarchyProperty="parentProperty">
                         <columns>
                             <column id="name"/>
                             <column id="beforeCaption"/>
@@ -60,7 +60,7 @@
                         <label value="msg://snapshotDiffViewer.itemState"/>
                         <label id="itemStateLabel"/>
                     </hbox>
-                    <form id="diffValuesField" dataContainer="diffDs" visible="false" width="100%">
+                    <form id="diffValuesField" dataContainer="diffCt" visible="false" width="100%">
                         <column>
                             <field property="afterString" editable="false"/>
                             <field property="beforeString" editable="false"/>

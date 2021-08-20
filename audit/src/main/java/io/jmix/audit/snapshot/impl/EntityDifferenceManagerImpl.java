@@ -366,7 +366,7 @@ public class EntityDifferenceManagerImpl implements EntityDifferenceManager {
                 if (resultPropertyFetchPlan == null) {
                     builder.add(firstProperty.getName());
                 } else {
-                    builder.add(firstProperty.getName(), resultPropertyFetchPlan.getName());
+                    builder.add(firstProperty.getName());
                 }
             }
         }

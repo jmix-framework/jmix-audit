@@ -19,6 +19,7 @@ package io.jmix.audit.snapshot.datastore;
 import io.jmix.audit.snapshot.model.EntitySnapshotModel;
 import io.jmix.core.metamodel.model.MetaClass;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 
@@ -47,6 +48,7 @@ public interface EntitySnapshotDataStore {
      * @param entity {@link Object} object, defining entity id what will be used for load snapshot
      * @return load snapshot, or null if not found
      */
+    @Nullable
     EntitySnapshotModel findLastSnapshot(Object entity, MetaClass entityMetaClass);
 
     /**
@@ -56,8 +58,8 @@ public interface EntitySnapshotDataStore {
      * @param referenceId {@link Object} object, defining entity id what will be used for load snapshot
      * @return load snapshot, or null if not found
      */
+    @Nullable
     EntitySnapshotModel findLastSnapshotById(Object referenceId, MetaClass entityMetaClass);
-
 
     /**
      * Save collection of entity snapshots.
