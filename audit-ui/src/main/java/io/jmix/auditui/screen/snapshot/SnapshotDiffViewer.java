@@ -84,8 +84,8 @@ public class SnapshotDiffViewer extends ScreenFragment {
             if (e.getItem() != null) {
                 EntityPropertyDifferenceModel.ItemState itemState = e.getItem().getItemState();
                 if (itemState != EntityPropertyDifferenceModel.ItemState.Normal) {
-                    String messageCode = "ItemState." + itemState.toString();
-                    itemStateLabel.setValue(messages.getMessage(messageCode));
+                    String messageCode = itemState.toString();
+                    itemStateLabel.setValue(messages.getMessage(EntityPropertyDifferenceModel.ItemState.class, messageCode));
                     itemStateLabel.setVisible(true);
                 } else {
                     itemStateField.setVisible(false);

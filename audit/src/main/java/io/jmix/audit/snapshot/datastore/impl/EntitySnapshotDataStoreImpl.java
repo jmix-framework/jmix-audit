@@ -92,7 +92,11 @@ public class EntitySnapshotDataStoreImpl implements EntitySnapshotDataStore {
 
     @Override
     public void saveSnapshot(Collection<EntitySnapshotModel> entitySnapshots) {
-        unconstrainedDataManager.save(entitySnapshots.toArray());
+        unconstrainedDataManager.save(
+                entitySnapshots.stream()
+                .map(entitySnapshotModelConverter::createEntitySnapshot)
+                .toArray()
+        );
     }
 
     @Override
